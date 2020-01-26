@@ -10,8 +10,14 @@ public class Qcm {
 	private String domaine;
 
 	private List<Question> questions;
-
+	
 	public Qcm() {
+	}
+	
+	public Qcm(String mode, String domaine, List<Question> questions) {
+		this.mode = mode;
+		this.domaine = domaine;
+		this.questions = questions;
 	}
 
 	public Qcm(String mode, String domaine) {
@@ -52,5 +58,4 @@ public class Qcm {
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 	}
-
 }

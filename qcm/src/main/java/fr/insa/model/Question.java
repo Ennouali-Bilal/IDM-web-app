@@ -10,12 +10,18 @@ public class Question {
 	private List<Reponse> reponses;
 
 	private Reponse chosenReponse;
-
+	
 	public Question() {
 	}
-
+	
 	public Question(String data) {
 		this.data = data;
+	}
+
+	public Question(String data, List<Reponse> reponses, Reponse chosenReponse) {
+		this.data = data;
+		this.reponses = reponses;
+		this.chosenReponse = chosenReponse;
 	}
 
 	public void addReponse(Reponse r) {
@@ -42,10 +48,10 @@ public class Question {
 
 		Reponse trueReponse = getTrueResponse();
 
-		if (trueReponse == null)
+		if (trueReponse == null || chosenReponse == null)
 			return false;
-
-		return trueReponse == this.chosenReponse;
+		
+		return trueReponse.getData().equals(this.chosenReponse.getData());
 	}
 
 	public String getData() {

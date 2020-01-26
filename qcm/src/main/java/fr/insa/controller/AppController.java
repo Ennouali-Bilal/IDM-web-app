@@ -2,85 +2,72 @@ package fr.insa.controller;
 
 import java.util.Set;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import fr.insa.model.Qcm;
 import fr.insa.model.Question;
 import fr.insa.utils.PropertiesUtil;
 
-@Controller
-@RequestMapping("/app")
+@RestController
+@RequestMapping("/api")
 public class AppController {
 
 	private PropertiesUtil props;
 	private Set<String> domaines;
-	private int score;
-	private Qcm qcm;
 
-	@GetMapping("index")
-	public String index(Model model) {
+	@GetMapping("/domaines")
+	public ResponseEntity<?> domaines() {
 
-		props = new PropertiesUtil("data.properties");
+		if (props == null) {
+			props = new PropertiesUtil("data.properties");
+		}
 
 		props.load();
 
 		domaines = props.getAllDomaines();
 
-		model.addAttribute("domaines", domaines);
-
-		Qcm q = new Qcm();
-
-		model.addAttribute("qcm", q);
-
-		return "index";
+		return new ResponseEntity<>(domaines, HttpStatus.OK);
 	}
 
-	@PostMapping("qcm")
-	public String qcm(@ModelAttribute("qcm") Qcm formQcm, Model model) {
+	@GetMapping("/qcm")
+	public ResponseEntity<?> qcm(@RequestParam("domaine") String domaine) {
 
-		Qcm q = props.getQcm(formQcm.getDomaine(), formQcm.getMode());
-
-		model.addAttribute("qcm", q);
-		
-		this.qcm = q;
-
-		return "qcm";
-	}
-
-	@PostMapping("sendqcm")
-	public String sendqcm(@ModelAttribute("qcm") Qcm formQcm, Model model) {
-		
-		System.out.println("Domaine -> " + formQcm.getDomaine());
-		System.out.println("Mode -> " + formQcm.getMode());
-		
-		for(Question q : formQcm.getQuestions()) {
-			System.out.println(q.getChosenReponse());
+		if (props == null) {
+			props = new PropertiesUtil("data.properties");
 		}
-		
-		System.out.println("formQcm -> " + formQcm.getQuestions());
-		
-		for (Question q : formQcm.getQuestions()) {
-			if (q.answeredCorrectly())
+
+		Qcm q = props.getQcm(domaine);
+
+		if (q == null) {
+			return new ResponseEntity<>("This is not a valid domain", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(q, HttpStatus.OK);
+
+	}
+
+	@PostMapping("/qcm")
+	public ResponseEntity<?> sendQcm(@Valid @RequestBody Qcm q) {
+
+		int score = 0;
+
+		// calculate the score
+		for (Question itr : q.getQuestions()) {
+			if (itr.answeredCorrectly()) {
 				score++;
-		}
-		
-		model.addAttribute("score", score);
-
-		if (formQcm.getMode().equals("Examen")) {
-			return "fin";
+			}
 		}
 
-		return "reponses";
-	}
+		return new ResponseEntity<>(score + "/" + q.getQuestions().size(), HttpStatus.OK);
 
-	@PostMapping("fin")
-	public String fin() {
-		return "fin";
 	}
-
 }

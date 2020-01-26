@@ -23,16 +23,23 @@
 		<h1 class="h3 mb-3 font-weight-normal">QCM</h1>
 	 	<form:form action="sendqcm" modelAttribute="qcm" method="POST">
 	 		
+	 		<form:hidden path="mode"/>
+	 		<form:hidden path="domaine"/>
+	 		<form:hidden path="questions"/>
+	 		
 	 		<c:forEach var="question" items="${qcm.questions}">
+				
 				<p>${question.data}?</p>
 				<c:forEach var="reponse" items="${question.reponses}">
 					<div class="form-check form-check-inline">
-						<form:radiobutton path="${question.chosenReponse}" value="${reponse}" label="${reponse.data}" class="form-check-input"/>
+						<form:radiobutton path="r0" value="${reponse}" name = "${question}" label="${reponse.data}"  class="form-check-input"/>
 					</div>
 				</c:forEach>
 			</c:forEach>
+			
 			<input type="submit" value="envoyer" class="save" class="btn btn-lg btn-primary btn-block"/>
 		</form:form>
+		<br>
 	</div>
 </body>
 </html>

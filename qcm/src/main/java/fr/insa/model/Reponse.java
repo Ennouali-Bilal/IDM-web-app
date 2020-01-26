@@ -8,7 +8,7 @@ public class Reponse {
 
 	public Reponse() {
 	}
-
+	
 	public Reponse(String data, boolean valeur) {
 		this.data = data;
 		this.valeur = valeur;

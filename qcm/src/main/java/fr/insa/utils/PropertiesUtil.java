@@ -78,11 +78,11 @@ public class PropertiesUtil {
 		return set;
 	}
 
-	public Qcm getQcm(String domaine, String mode) {
+	public Qcm getQcm(String domaine) {
 
 		for (Qcm q : programme.getQcms()) {
 			
-			if (q.getDomaine().equals(domaine) && q.getMode().equals(mode)) {
+			if (q.getDomaine().equals(domaine)) {
 				return q;
 			}
 		}
