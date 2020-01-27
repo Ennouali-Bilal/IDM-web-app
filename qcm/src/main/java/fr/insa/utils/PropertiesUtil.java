@@ -1,6 +1,5 @@
 package fr.insa.utils;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
@@ -35,15 +34,18 @@ public class PropertiesUtil {
 
 				String mode = prop.getProperty("mode" + i);
 				String domaine = prop.getProperty("domaine" + i);
+				int num_questions = Integer.parseInt(prop.getProperty("num_questions" + i));
 
 				Qcm qcm = new Qcm(mode, domaine);
 
-				for (int j = 0; j < 10; j++) {
+				for (int j = 0; j < num_questions; j++) {
 
 					String question_data = prop.getProperty("question_data" + i + j);
+					int num_reponses = Integer.parseInt(prop.getProperty("num_reponses" + i + j));
+
 					Question q = new Question(question_data);
 
-					for (int k = 0; k < 4; k++) {
+					for (int k = 0; k < num_reponses; k++) {
 
 						String reponse_data = prop.getProperty("reponse_data" + i + j + k);
 						String str_value = prop.getProperty("reponse_value" + i + j + k);
@@ -81,7 +83,7 @@ public class PropertiesUtil {
 	public Qcm getQcm(String domaine) {
 
 		for (Qcm q : programme.getQcms()) {
-			
+
 			if (q.getDomaine().equals(domaine)) {
 				return q;
 			}
